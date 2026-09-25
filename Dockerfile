@@ -39,7 +39,10 @@ COPY --from=pos-builder --chown=www-data:www-data /app/dist /var/www/html/public
 
 # Set proper permissions
 RUN chown -R www-data:www-data /var/www/html/public/uploads \
-  && chmod -R 755 /var/www/html/public/uploads
+  && chmod -R 755 /var/www/html/public/uploads \
+  && chmod +x /var/www/html/docker-entrypoint.sh
 
-# Expose port 80
+# Expose default port
 EXPOSE 80
+
+ENTRYPOINT ["/var/www/html/docker-entrypoint.sh"]

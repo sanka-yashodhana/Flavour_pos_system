@@ -2,7 +2,7 @@
 -- Run this to create test rider accounts
 
 -- Insert sample riders
-INSERT INTO users (username, name, email, password, phone, role) VALUES
+INSERT INTO users (username, full_name, email, password, phone, role) VALUES
 ('rider1', 'John Rider', 'rider1@example.com', '$2y$10$YourHashedPasswordHere', '0771234567', 'rider'),
 ('rider2', 'Jane Delivery', 'rider2@example.com', '$2y$10$YourHashedPasswordHere', '0777654321', 'rider')
 ON CONFLICT (username) DO NOTHING;
