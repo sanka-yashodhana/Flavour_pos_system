@@ -23,7 +23,8 @@ RUN apt-get update \
     unzip \
   && docker-php-ext-install pdo pdo_pgsql zip \
   && docker-php-ext-enable pdo_pgsql \
-  && a2enmod rewrite \
+  && (a2dismod mpm_event mpm_worker || true) \
+  && a2enmod mpm_prefork rewrite \
   && sed -ri "s!/var/www/html!${APACHE_DOCUMENT_ROOT}!g" /etc/apache2/sites-available/000-default.conf \
   && printf "<Directory \"${APACHE_DOCUMENT_ROOT}\">\n    AllowOverride All\n    Require all granted\n</Directory>\n" > /etc/apache2/conf-enabled/app.conf \
   && rm -rf /var/lib/apt/lists/*
