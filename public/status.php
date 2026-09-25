@@ -7,7 +7,11 @@ require_once '../app/helpers/auth.php';
 
 // Check if user is logged in
 $isLoggedIn = isLoggedIn();
-$userInfo = $isLoggedIn ? getUserSession() : null;
+$userInfo = $isLoggedIn ? [
+    'id' => getCurrentUserId(),
+    'role' => getCurrentUserRole(),
+    'username' => getCurrentUserName()
+] : null;
 
 // Initialize status checks
 $checks = [];
@@ -32,6 +36,11 @@ try {
     $dbNameInfo = getenv('DB_NAME') ?: ($db ?? 'unknown');
     $dbUserInfo = getenv('DB_USER') ?: ($user ?? 'unknown');
     $dbSourceInfo = getenv('DB_HOST') ? 'docker env vars' : 'app/config/database.php';
+    
+    if (empty($pdo)) {
+        throw new Exception($dbConnectionError ?? 'Database not connected');
+    }
+
     $checks['database'] = [
         'name' => 'Database Connection',
         'status' => true,
@@ -52,7 +61,7 @@ try {
         substr($version, 0, 40) . '...'
     );
     
-} catch (Exception $e) {
+} catch (Throwable $e) {
     $checks['database'] = [
         'name' => 'Database Connection',
         'status' => false,

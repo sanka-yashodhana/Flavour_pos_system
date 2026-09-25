@@ -37,12 +37,13 @@ COPY --chown=www-data:www-data . /var/www/html
 # Copy built POS app from builder stage
 COPY --from=pos-builder --chown=www-data:www-data /app/dist /var/www/html/public/pos
 
-# Set proper permissions
+# Set proper permissions and normalize line endings for Linux
 RUN chown -R www-data:www-data /var/www/html/public/uploads \
   && chmod -R 755 /var/www/html/public/uploads \
+  && sed -i 's/\r$//' /var/www/html/docker-entrypoint.sh \
   && chmod +x /var/www/html/docker-entrypoint.sh
 
-# Expose default port
-EXPOSE 80
+# Expose standard web and container ports
+EXPOSE 80 8080
 
 ENTRYPOINT ["/var/www/html/docker-entrypoint.sh"]

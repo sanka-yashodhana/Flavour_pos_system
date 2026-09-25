@@ -53,10 +53,22 @@ try {
             ]);
             $pdo->exec("SET timezone = 'UTC'");
         } catch (PDOException $e2) {
-            die("Database Connection Failed: " . $e2->getMessage());
+            $script = basename($_SERVER['SCRIPT_NAME'] ?? '');
+            if ($script === 'status.php' || $script === 'health.php') {
+                $pdo = null;
+                $dbConnectionError = $e2->getMessage();
+            } else {
+                die("Database Connection Failed: " . $e2->getMessage());
+            }
         }
     } else {
-        die("Database Connection Failed: " . $e->getMessage());
+        $script = basename($_SERVER['SCRIPT_NAME'] ?? '');
+        if ($script === 'status.php' || $script === 'health.php') {
+            $pdo = null;
+            $dbConnectionError = $e->getMessage();
+        } else {
+            die("Database Connection Failed: " . $e->getMessage());
+        }
     }
 }
 
